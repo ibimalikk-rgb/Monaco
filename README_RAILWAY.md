@@ -5,7 +5,6 @@
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHANNEL_ID`
 - `INSTAGRAM_USERNAME`
-- `INSTAGRAM_PASSWORD`
 - `LLAMA_API_KEY`
 - `LLAMA_MODEL` (optional; defaults to `llama-3.3-70b-versatile`)
 - `ACCOUNTS_LIST` (comma-separated Instagram usernames, no @ required)
@@ -17,6 +16,14 @@
 
 Attach a persistent Volume to the bot service and mount it at `/data`.
 Railway automatically exposes `RAILWAY_VOLUME_MOUNT_PATH`; the bot stores its SQLite database there.
+
+Upload a valid Instaloader session to the volume as `/session-instagram`.
+The bot sees this file at `/data/session-instagram` and loads it automatically.
+`INSTAGRAM_PASSWORD` is not required when this session file is present.
+
+For a non-Railway deployment, set `INSTAGRAM_SESSION_FILE` to the session file's
+absolute path. Password login remains available as a fallback when no session
+file path is configured, but it is not recommended for unattended deployments.
 
 The database remembers:
 - the newest Instagram post timestamp seen for every watched account;

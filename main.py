@@ -5,6 +5,7 @@ from config import (
     ACCOUNTS_LIST,
     IMAGE_HASH_MAX_DISTANCE,
     INSTAGRAM_PASSWORD,
+    INSTAGRAM_SESSION_FILE,
     INSTAGRAM_USERNAME,
     SCRAPE_INTERVAL_MINUTES,
 )
@@ -22,7 +23,10 @@ from utils import download_image, perceptual_dhash
 
 def run_scrape_cycle():
     posts, newest_seen = scrape_instagram(
-        ACCOUNTS_LIST, INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD
+        ACCOUNTS_LIST,
+        INSTAGRAM_USERNAME,
+        INSTAGRAM_PASSWORD,
+        INSTAGRAM_SESSION_FILE,
     )
     print(f"Found {len(posts)} new meet candidate(s).")
 

@@ -6,7 +6,7 @@ from storage import get_last_seen, post_seen
 from utils import is_meet_post
 
 
-def scrape_instagram(accounts, username, password):
+def scrape_instagram(accounts, username, password, session_file=None):
     loader = instaloader.Instaloader(
         download_pictures=False,
         download_videos=False,
@@ -15,11 +15,26 @@ def scrape_instagram(accounts, username, password):
         compress_json=False,
     )
 
-    if username and password:
+    if not username:
+        raise RuntimeError("INSTAGRAM_USERNAME is required")
+
+    if session_file:
+        try:
+            loader.load_session_from_file(username, session_file)
+            print(f"Loaded Instagram session from {session_file}")
+        except Exception as exc:
+            raise RuntimeError(
+                f"Could not load Instagram session from {session_file}"
+            ) from exc
+    elif password:
         try:
             loader.login(username, password)
         except Exception as exc:
-            print("Instagram login failed:", exc)
+            raise RuntimeError("Instagram password login failed") from exc
+    else:
+        raise RuntimeError(
+            "Instagram authentication is not configured; provide a session file"
+        )
 
     now = datetime.now(timezone.utc)
     meets = []
