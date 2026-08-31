@@ -47,6 +47,12 @@ def init_db():
             );
 
             CREATE INDEX IF NOT EXISTS idx_seen_images_hash ON seen_images(image_hash);
+
+            CREATE TABLE IF NOT EXISTS scrape_schedule (
+                account TEXT PRIMARY KEY,
+                next_run_at TEXT NOT NULL,
+                rate_limit_failures INTEGER NOT NULL DEFAULT 0
+            );
             """
         )
 
@@ -75,6 +81,32 @@ def set_last_seen(account, dt):
             ON CONFLICT(account) DO UPDATE SET last_seen_at = excluded.last_seen_at
             """,
             (account, value),
+        )
+
+
+def get_scrape_schedule(account):
+    with _DB_LOCK, _connect() as conn:
+        row = conn.execute(
+            "SELECT next_run_at, rate_limit_failures FROM scrape_schedule "
+            "WHERE account = ?",
+            (account,),
+        ).fetchone()
+    if not row:
+        return None
+    return datetime.fromisoformat(row["next_run_at"]), row["rate_limit_failures"]
+
+
+def set_scrape_schedule(account, next_run_at, rate_limit_failures):
+    with _DB_LOCK, _connect() as conn:
+        conn.execute(
+            """
+            INSERT INTO scrape_schedule(account, next_run_at, rate_limit_failures)
+            VALUES (?, ?, ?)
+            ON CONFLICT(account) DO UPDATE SET
+                next_run_at = excluded.next_run_at,
+                rate_limit_failures = excluded.rate_limit_failures
+            """,
+            (account, _iso(next_run_at), rate_limit_failures),
         )
 
 
