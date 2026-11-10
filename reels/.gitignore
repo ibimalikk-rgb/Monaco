@@ -1,0 +1,4 @@
+# voiceover files, renders and the brand mark are fetched/produced at build time
+vo/
+out/
+assets/logo.png

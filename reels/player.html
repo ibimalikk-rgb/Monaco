@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Monaco Auto reels</title>
+<style>
+  @font-face { font-family: Inter; font-weight: 600; src: url(fonts/Inter-SemiBold.otf); }
+  @font-face { font-family: Inter; font-weight: 800; src: url(fonts/Inter-ExtraBold.otf); }
+  @font-face { font-family: Inter; font-weight: 900; src: url(fonts/Inter-Black.otf); }
+  html, body { margin: 0; background: #000; height: 100%; }
+  canvas { display: block; margin: 0 auto; height: 100vh; aspect-ratio: 9 / 16; }
+  body.raw canvas { height: auto; margin: 0; }
+</style>
+</head>
+<body>
+<!-- Open with ?reel=v1 | v2 | v3. Loops silently in a browser; tools/render.mjs drives it frame by frame. -->
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib/scripts.js"></script>
+<script src="lib/engine.js"></script>
+<script src="lib/parts.js"></script>
+<script src="scenes/v1.js"></script>
+<script src="scenes/v2.js"></script>
+<script src="scenes/v3.js"></script>
+</body>
+</html>
