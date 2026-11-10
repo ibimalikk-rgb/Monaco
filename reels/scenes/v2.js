@@ -52,7 +52,7 @@
     ctx.save(); rrect(ctx, X0, y, LW, LH, 28); ctx.fillStyle = 'rgba(9,18,46,.84)';
     if (on) { ctx.shadowColor = col; ctx.shadowBlur = 34; } ctx.fill(); ctx.shadowBlur = 0;
     ctx.lineWidth = on ? 5 : 3; ctx.strokeStyle = hexA(col, on ? 1 : 0.55); ctx.stroke(); ctx.restore();
-    txt(ctx, LN[i].name, X0 + 26, y + 52, { size: 31, weight: 900, align: 'left', color: col, ls: 0 });
+    txt(ctx, LN[i].name, X0 + 26, y + 52, { size: 29, weight: 900, align: 'left', color: col, ls: 0 });
     txt(ctx, k === 'cvt' ? 'RATIO' : 'GEAR', X0 + 28, y + 90, { size: 20, weight: 800, ls: 4, align: 'left', color: COL.ice });
     txt(ctx, k === 'cvt' ? '∞' : String(live ? s.g : 1), X0 + 26, y + 152, { size: 64, weight: 900, align: 'left', color: s.sh ? col : COL.white });
     if (s.sh && k !== 'dct') txt(ctx, k === 'manual' ? 'POWER OFF' : 'SHIFT', X0 + 84, y + 146, { size: 21, weight: 900, ls: 2, align: 'left', color: k === 'manual' ? COL.bad : col });
@@ -63,7 +63,7 @@
     ctx.strokeStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 14; ctx.beginPath(); ctx.moveTo(TX0, ty); ctx.lineTo(lerp(TX0 + 4, TX1, p), ty); ctx.stroke(); ctx.shadowBlur = 0;
     ctx.fillStyle = COL.white; for (let r = 0; r < 4; r++) for (let c = 0; c < 2; c++) if ((r + c) % 2 === 0) ctx.fillRect(TX1 + 2 + c * 7, ty - 14 + r * 7, 7, 7);
     ctx.restore();
-    drawCar(ctx, lerp(TX0 + 92, TX1, p), ty + 6, 0.42, col, { spin: tr * 14 * p + i, glow: 12 });
+    drawCar(ctx, lerp(TX0 + 104, TX1, p), ty + 6, 0.42, col, { spin: tr * 14 * p + i, glow: 12 });
     // rpm trace
     const gy0 = y + 76, gh = 80, gx = tt => lerp(TX0, TX1, tt / tMax), gy = rpm => gy0 + gh - clamp((rpm - 1500) / 5600) * gh;
     ctx.save(); ctx.strokeStyle = 'rgba(185,200,242,.16)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(TX0, gy0 + gh); ctx.lineTo(TX1, gy0 + gh); ctx.stroke();
@@ -105,7 +105,7 @@
       const tr = (t - tGo) * kT, live = t >= tGo, id = g.id, S = TL.segs;
       const outro = id === 'outro' ? eio(prog(t, g.start, 0.4)) : 0;
       // header
-      txt(ctx, 'SAME ENGINE · SAME CAR · 4 GEARBOXES', 90, 350, { size: 30, weight: 800, ls: 3, align: 'left', color: COL.gold });
+      txt(ctx, 'SAME ENGINE · SAME CAR · 4 GEARBOXES', 90, 350, { size: 30, weight: 800, ls: 3, align: 'left', color: COL.gold, alpha: 1 - outro });
       if (live && !outro) txt(ctx, (Math.min(tr, tMax)).toFixed(1) + ' s', 990, 350, { size: 34, weight: 900, align: 'right', ls: 0 });
       const resP = prog(t, S.result.start, 0.3);
       if (outro > 0) pop(ctx, W / 2, 430, outro, () => { txt(ctx, 'WHICH ONE', W / 2, 432, { size: 104, weight: 900 }); txt(ctx, 'ARE YOU TAKING?', W / 2, 540, { size: 104, weight: 900, color: COL.gold }); }, 0.85);
