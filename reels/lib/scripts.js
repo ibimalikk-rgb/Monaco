@@ -7,8 +7,8 @@ window.SCRIPTS = {
     "title": "How each transmission works",
     "voice": "Knox",
     "tail": 2.4,
-    "maxPause": 0.2,
-    "tempo": 1.16,
+    "maxPause": 0.18,
+    "tempo": 1.3,
     "segs": [
       {"id": "hook", "text": "Four transmissions. Here's how each one actually works."},
       {"id": "manual", "text": "Manual. You're the computer. Clutch in, pick a gear, clutch out. Simple, tough, all on you."},

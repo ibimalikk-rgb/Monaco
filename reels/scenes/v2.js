@@ -6,7 +6,7 @@
   const RPM_PK = 6500, RED = 6800, PMAX = 235e3, MASS = 1550, AMAX = 6.5, VT = 200 / 3.6, DT = 1 / 240, HZ = 60;
   const CFG = {
     manual: { top: [58, 98, 142, 196, 245, 295], shift: 0.6, hold: 0, eff: 0.94, launch: 3800 },   // power fully off while the clutch is in
-    auto: { top: [44, 70, 100, 134, 172, 212, 260, 310], shift: 0.28, hold: 0.35, eff: 0.9, launch: 2800 },
+    auto: { top: [44, 70, 100, 134, 172, 212, 260, 310], shift: 0.22, hold: 0.5, eff: 0.915, launch: 3000 },
     cvt: { eff: 0.86 },                                                                              // no steps; belt losses instead
     dct: { top: [50, 82, 118, 158, 202, 250, 300], shift: 0.09, hold: 0.6, eff: 0.93, launch: 4200 },
   };
@@ -45,14 +45,14 @@
     return done ? { ...r.s[i], v: 200, sh: false, done } : { ...r.s[i], done: false };
   };
 
-  const X0 = 60, LW = 960, Y0 = 604, LH = 172, GAP = 12, TX0 = 250, TX1 = 800;
+  const X0 = 60, LW = 960, Y0 = 604, LH = 172, GAP = 12, TX0 = 318, TX1 = 800;
   function lane(ctx, i, t, tr, focus, live) {
     const k = LN[i].k, col = COL[k], y = Y0 + i * (LH + GAP), s = sample(k, Math.max(0, tr)), on = focus === i;
     ctx.save(); ctx.globalAlpha *= focus < 0 || on ? 1 : 0.5;
     ctx.save(); rrect(ctx, X0, y, LW, LH, 28); ctx.fillStyle = 'rgba(9,18,46,.84)';
     if (on) { ctx.shadowColor = col; ctx.shadowBlur = 34; } ctx.fill(); ctx.shadowBlur = 0;
     ctx.lineWidth = on ? 5 : 3; ctx.strokeStyle = hexA(col, on ? 1 : 0.55); ctx.stroke(); ctx.restore();
-    txt(ctx, LN[i].name, X0 + 26, y + 52, { size: 34, weight: 900, align: 'left', color: col, ls: 0 });
+    txt(ctx, LN[i].name, X0 + 26, y + 52, { size: 31, weight: 900, align: 'left', color: col, ls: 0 });
     txt(ctx, k === 'cvt' ? 'RATIO' : 'GEAR', X0 + 28, y + 90, { size: 20, weight: 800, ls: 4, align: 'left', color: COL.ice });
     txt(ctx, k === 'cvt' ? '∞' : String(live ? s.g : 1), X0 + 26, y + 152, { size: 64, weight: 900, align: 'left', color: s.sh ? col : COL.white });
     if (s.sh && k !== 'dct') txt(ctx, k === 'manual' ? 'POWER OFF' : 'SHIFT', X0 + 84, y + 146, { size: 21, weight: 900, ls: 2, align: 'left', color: k === 'manual' ? COL.bad : col });
