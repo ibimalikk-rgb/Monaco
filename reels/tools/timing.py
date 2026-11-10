@@ -134,7 +134,7 @@ def main():
             t += dur + s.get("gap", 0.35)
         timing[rid] = {"segs": segs}
         print(f"{rid}: speech ends {t:.2f}s, total ≈ {t - 0.35 + reel.get('tail', 1.8):.2f}s")
-    (ROOT / "timing.json").write_text(json.dumps(timing, indent=1))
+    (ROOT / "timing.json").write_text(json.dumps(timing, separators=(",", ":")))
 
 
 if __name__ == "__main__":

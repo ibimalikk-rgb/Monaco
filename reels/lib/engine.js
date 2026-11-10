@@ -127,7 +127,7 @@ function buildTiming(reel, inj) {
       const t0 = voStart + (voEnd - voStart) * acc / tot; acc += wts[j];
       return { w, t0, t1: voStart + (voEnd - voStart) * acc / tot };
     });
-    if (meas && meas.length === words.length) words.forEach((w, j) => { w.t0 = meas[j]; w.t1 = j + 1 < words.length ? meas[j + 1] : voEnd; });
+    if (meas && meas.length === words.length) words.forEach((w, j) => { w.t0 = j ? meas[j] : voStart; w.t1 = j + 1 < words.length ? meas[j + 1] : voEnd; });
     const chunks = []; let cur = [], len = 0;
     words.forEach(w => {
       cur.push(w); len += w.w.length + 1;
