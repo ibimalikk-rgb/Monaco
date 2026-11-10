@@ -1,11 +1,14 @@
 // Single source of truth for the three reel scripts.
 // `text` is what appears in captions; `say` (optional) is what is sent to TTS.
+// `maxPause` / `tempo` tighten the generated voiceover (see tools/timing.py).
 // Read by the browser (window.SCRIPTS) and by tools/*.py (JSON after the first "=").
 window.SCRIPTS = {
   "v1": {
     "title": "How each transmission works",
     "voice": "Knox",
     "tail": 2.4,
+    "maxPause": 0.2,
+    "tempo": 1.16,
     "segs": [
       {"id": "hook", "text": "Four transmissions. Here's how each one actually works."},
       {"id": "manual", "text": "Manual. You're the computer. Clutch in, pick a gear, clutch out. Simple, tough, all on you."},
@@ -19,6 +22,8 @@ window.SCRIPTS = {
     "title": "Same engine, four gearboxes: the race",
     "voice": "Dylan",
     "tail": 2.6,
+    "maxPause": 0.26,
+    "tempo": 1.0,
     "segs": [
       {"id": "hook", "text": "Same engine. Four gearboxes. Who hits two hundred first?", "gap": 0.5},
       {"id": "manual", "text": "The manual loses time on every single shift. Clutch in, power off."},
@@ -33,6 +38,8 @@ window.SCRIPTS = {
     "title": "The one habit that kills each transmission",
     "voice": "Jasper",
     "tail": 2.6,
+    "maxPause": 0.22,
+    "tempo": 1.1,
     "segs": [
       {"id": "hook", "text": "Every transmission has one habit that kills it."},
       {"id": "manual", "text": "Manual. Resting your foot on the clutch. Even light pressure wears it out. Foot off, unless you're shifting."},

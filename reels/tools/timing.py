@@ -2,7 +2,7 @@
 """Measure the voiceover and write timing.json for the renderer.
 
 Input : vo/<reel>/<seg>.mp3   (one file per script segment, see lib/scripts.js)
-Output: vo/<reel>/<seg>.wav   (trimmed, 48 kHz mono)
+Output: vo/<reel>/<seg>.wav   (trimmed, long pauses tightened, optional tempo, 48 kHz mono)
         timing.json           ({reel: {segs: {seg: {voStart, voEnd, words[]}}}})
 Word start times come from faster-whisper when it is installed; otherwise the
 renderer spreads words across the segment in proportion to their length.
@@ -17,7 +17,7 @@ SR = 48000
 
 def scripts():
     src = (ROOT / "lib/scripts.js").read_text()
-    return json.loads(src[src.index("=") + 1:].rstrip().rstrip(";"))
+    return json.loads(src[src.index("{", src.index("window.SCRIPTS")):].rstrip().rstrip(";"))
 
 
 def decode(path):
@@ -32,6 +32,31 @@ def trim(x, pad=0.03):
     live = np.where(rms > rms.max() * 10 ** (-38 / 20))[0]
     a = max(0, live[0] * hop - int(pad * SR)); b = min(len(x), (live[-1] + 1) * hop + int(pad * 2 * SR))
     return x[a:b]
+
+
+def tighten(x, max_pause):
+    """Shorten every internal silence longer than max_pause (TTS tends to linger on full stops)."""
+    hop = SR // 200
+    rms = np.sqrt(np.array([np.mean(x[i:i + hop] ** 2) for i in range(0, len(x) - hop, hop)]) + 1e-12)
+    quiet = rms < rms.max() * 10 ** (-34 / 20)
+    keep = np.ones(len(x), dtype=bool); i = 0; n = len(quiet); half = int(max_pause / 2 * SR)
+    while i < n:
+        if quiet[i]:
+            j = i
+            while j < n and quiet[j]: j += 1
+            a, b = i * hop, j * hop
+            if i > 0 and j < n and b - a > 2 * half: keep[a + half:b - half] = False
+            i = j
+        else:
+            i += 1
+    return x[keep]
+
+
+def retime(x, tempo):
+    if abs(tempo - 1) < 0.005: return x
+    out = subprocess.run(["ffmpeg", "-v", "error", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", "-af", f"atempo={tempo}",
+                          "-f", "f32le", "-"], input=x.astype(np.float32).tobytes(), capture_output=True, check=True).stdout
+    return np.frombuffer(out, dtype=np.float32).copy()
 
 
 def write_wav(path, x):
@@ -92,6 +117,7 @@ def main():
         t, segs = 0.2, {}
         for s in reel["segs"]:
             x = trim(decode(ROOT / "vo" / rid / f"{s['id']}.mp3"))
+            x = retime(tighten(x, reel.get("maxPause", 0.3)), reel.get("tempo", 1.0))
             wav = ROOT / "vo" / rid / f"{s['id']}.wav"; write_wav(wav, x)
             dur = len(x) / SR
             seg = {"voStart": round(t, 3), "voEnd": round(t + dur, 3)}

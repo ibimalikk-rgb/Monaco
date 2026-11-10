@@ -25,7 +25,7 @@ hz = lambda m: 440.0 * 2 ** ((m - 69) / 12)
 
 def scripts():
     src = (ROOT / "lib/scripts.js").read_text()
-    return json.loads(src[src.index("=") + 1:].rstrip().rstrip(";"))
+    return json.loads(src[src.index("{", src.index("window.SCRIPTS")):].rstrip().rstrip(";"))
 
 
 def read_wav(p):
