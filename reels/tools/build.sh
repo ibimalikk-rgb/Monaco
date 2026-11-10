@@ -3,6 +3,7 @@
 # Needs vo/<reel>/<seg>.mp3 and a timing.json from tools/timing.py (run that first).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+export NODE_PATH="${NODE_PATH:-$(npm root -g)}"   # lets render.mjs find a globally installed Playwright
 mkdir -p out
 for r in "$@"; do
   node tools/render.mjs "$r" "out/${r}_silent.mp4"
